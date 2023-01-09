@@ -1,10 +1,8 @@
 import 'dart:core';
 
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../utils/Constants.dart';
 import '../utils/YoutubeData.dart';
 
 bool gotData = false;
@@ -15,7 +13,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: MyHomePage(title: 'Test'),
+      home: MyHomePage(title: 'Welcome!'),
     );
   }
 }
@@ -30,10 +28,21 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final videoTitle = <String>[];
-  final videoAuthor = <String>[];
-  final videoUrl = <String>[];
-  final videoThubnail = <String>[];
+  final Map videoData = <String, dynamic>{};
+  double _opacity = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadImage();
+  }
+
+  void _loadImage() async {
+    // Load image from network
+    setState(() {
+      _opacity = 1.0;
+    });
+  }
 
   Future getPlaylist() async {
     if (gotData) {
@@ -44,15 +53,17 @@ class _MyHomePageState extends State<MyHomePage> {
             if (gotData) {
               return;
             }
-            // Remove every item that has title "Deleted video"
             for (var i = 0; i < value['items'].length; i++) {
               if (value['items'][i]['snippet']['title'] != 'Deleted video') {
-                videoTitle.add(value['items'][i]['snippet']['title']);
-                videoAuthor.add(value['items'][i]['snippet']['channelTitle']);
-                videoUrl.add(
-                    "https://www.youtube.com/watch?v=${value['items'][i]['snippet']['resourceId']['videoId']}");
-                videoThubnail.add(
-                    value['items'][i]['snippet']['thumbnails']['high']['url']);
+                videoData[value['items'][i]['snippet']['resourceId']['videoId']] = {
+                  'id': value['items'][i]['snippet']['resourceId']['videoId'],
+                  'position': value['items'][i]['snippet']['position'],
+                  'title': value['items'][i]['snippet']['title'],
+                  'author': value['items'][i]['snippet']['videoOwnerChannelTitle'],
+                  'url':
+                      "https://www.youtube.com/watch?v=${value['items'][i]['snippet']['resourceId']['videoId']}",
+                  'thumbnail': value['items'][i]['snippet']['thumbnails']['high']['url']
+                };
               }
             }
             gotData = true;
@@ -75,14 +86,33 @@ class _MyHomePageState extends State<MyHomePage> {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return ListView.builder(
                       shrinkWrap: true,
-                      itemCount: videoTitle.length,
+                      itemCount: videoData.length,
                       itemBuilder: (context, index) {
                         return ListTile(
-                          title: Text(videoTitle[index]),
-                          subtitle: Text(videoAuthor[index]),
-                          leading: Image.network(videoThubnail[index]),
+                          title: Text(videoData.values.elementAt(index)['title']),
+                          subtitle: Text(videoData.values.elementAt(index)['author']),
+                          leading: SizedBox(
+                            width: 95,
+                            height: 110,
+                            child: Stack(
+                              children: [
+                                const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                                Center(
+                                  child: Opacity(
+                                    opacity: _opacity,
+                                    child: Image.network(
+                                      videoData.values.elementAt(index)['thumbnail'],
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                           onTap: () {
-                            launchUrl(Uri.parse(videoUrl[index]));
+                            launchUrl(Uri.parse(videoData.values.elementAt(index)['url']));
                           },
                         );
                       },
