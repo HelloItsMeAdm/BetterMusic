@@ -1,11 +1,13 @@
 import 'dart:core';
+import 'dart:io';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../utils/DownloadManager.dart';
+import '../utils/SharedPrefs.dart';
 import '../utils/YoutubeData.dart';
-
-bool gotData = false;
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -28,8 +30,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final Map videoData = <String, dynamic>{};
+  Map videoData = <String, dynamic>{};
   double _opacity = 0.0;
+  String basePath = '';
 
   @override
   void initState() {
@@ -38,37 +41,30 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _loadImage() async {
-    // Load image from network
     setState(() {
       _opacity = 1.0;
     });
   }
 
   Future getPlaylist() async {
-    if (gotData) {
+    if (videoData.isNotEmpty) {
       return;
     }
-    YoutubeData().getPlaylists().then((value) => {
-          setState(() {
-            if (gotData) {
-              return;
-            }
-            for (var i = 0; i < value['items'].length; i++) {
-              if (value['items'][i]['snippet']['title'] != 'Deleted video') {
-                videoData[value['items'][i]['snippet']['resourceId']['videoId']] = {
-                  'id': value['items'][i]['snippet']['resourceId']['videoId'],
-                  'position': value['items'][i]['snippet']['position'],
-                  'title': value['items'][i]['snippet']['title'],
-                  'author': value['items'][i]['snippet']['videoOwnerChannelTitle'],
-                  'url':
-                      "https://www.youtube.com/watch?v=${value['items'][i]['snippet']['resourceId']['videoId']}",
-                  'thumbnail': value['items'][i]['snippet']['thumbnails']['high']['url']
-                };
-              }
-            }
-            gotData = true;
-          })
-        });
+    DownloadManager().getDownloadedFiles().then((files) {
+      YoutubeData().getPlaylists().then((data) => {
+            SharedPrefs().getRootData('folderPath').then((folderPath) {
+              videoData = data ?? {};
+              basePath = folderPath;
+              setState(() {
+                data?.forEach((key, value) {
+                  if (!files.containsKey("$key.mp3")) {
+                    DownloadManager().download(key);
+                  }
+                });
+              });
+            })
+          });
+    });
   }
 
   @override
@@ -90,7 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       itemBuilder: (context, index) {
                         return ListTile(
                           title: Text(videoData.values.elementAt(index)['title']),
-                          subtitle: Text(videoData.values.elementAt(index)['author']),
+                          subtitle: Text(
+                              "${videoData.values.elementAt(index)['author']} - ${videoData.values.elementAt(index)['id']}"),
                           leading: SizedBox(
                             width: 95,
                             height: 110,
@@ -102,8 +99,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                 Center(
                                   child: Opacity(
                                     opacity: _opacity,
-                                    child: Image.network(
-                                      videoData.values.elementAt(index)['thumbnail'],
+                                    child: Image.file(
+                                      basePath == ''
+                                          ? File(videoData.values
+                                              .elementAt(index)['thumbnail'])
+                                          : File(
+                                              "$basePath/thumbnails/${videoData.values.elementAt(index)['id']}.jpg"),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -112,7 +113,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ),
                           onTap: () {
-                            launchUrl(Uri.parse(videoData.values.elementAt(index)['url']));
+                            final player = AudioPlayer();
+                            String path = "$basePath/mp3/${videoData.values.elementAt(index)['id']}.mp3";
+                            player.play(DeviceFileSource(path));
                           },
                         );
                       },
