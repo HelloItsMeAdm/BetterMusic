@@ -1,15 +1,12 @@
-import 'package:bettermusic/pages/LoginPage.dart';
 import 'package:bettermusic/pages/HomePage.dart';
+import 'package:bettermusic/pages/LoginPage.dart';
 import 'package:bettermusic/utils/InternetCheck.dart';
-import 'package:bettermusic/utils/SharedPrefs.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  await SharedPrefs().setDefaultData();
 
   // Request access to files permission
   await Permission.manageExternalStorage.request();

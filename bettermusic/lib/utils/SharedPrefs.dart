@@ -21,15 +21,4 @@ class SharedPrefs {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString(key, data);
   }
-
-  Future<String> getRootData(String key) async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(key) ?? '';
-  }
-
-  Future<void> setDefaultData() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString('currentSongs', json.encode(<String, dynamic>{}));
-    prefs.setString('folderPath', '/storage/emulated/0/BetterMusic');
-  }
 }

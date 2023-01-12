@@ -3,18 +3,18 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-import 'SharedPrefs.dart';
+import 'Constants.dart';
 
 class DownloadManager {
   final YoutubeExplode yt = YoutubeExplode();
 
   Future<void> download(String id) async {
-    final String basePath = await SharedPrefs().getRootData("folderPath");
-
-    await createFolders(basePath);
+    String basePath = await Constants().getAppSpecificFilesDir();
 
     final String mp3Path = "$basePath/mp3/$id.mp3";
     final String thumbnailPath = "$basePath/thumbnails/$id.jpg";
+
+    await createFolders(basePath);
 
     await downloadThumbnail(thumbnailPath, id);
 
@@ -49,7 +49,7 @@ class DownloadManager {
   }
 
   Future<Map> getDownloadedFiles() async {
-    final String basePath = await SharedPrefs().getRootData("folderPath");
+    String basePath = await Constants().getAppSpecificFilesDir();
     await createFolders(basePath);
     final List<FileSystemEntity> files = Directory("$basePath/mp3").listSync();
     final Map<String, String> data = <String, String>{};
@@ -85,17 +85,13 @@ class DownloadManager {
   }
 
   Future<void> createFolders(String path) async {
-    final Directory base = Directory(path);
-    final Directory mp3 = Directory("$path/mp3");
-    final Directory thumbnails = Directory("$path/thumbnails");
-    if (!await base.exists()) {
-      await base.create();
+    final Directory mp3Dir = Directory("$path/mp3");
+    final Directory thumbnailDir = Directory("$path/thumbnails");
+    if (!await mp3Dir.exists()) {
+      await mp3Dir.create(recursive: true);
     }
-    if (!await mp3.exists()) {
-      await mp3.create();
-    }
-    if (!await thumbnails.exists()) {
-      await thumbnails.create();
+    if (!await thumbnailDir.exists()) {
+      await thumbnailDir.create(recursive: true);
     }
   }
 }

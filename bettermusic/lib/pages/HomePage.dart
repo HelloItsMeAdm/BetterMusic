@@ -3,10 +3,9 @@ import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
+import '../utils/Constants.dart';
 import '../utils/DownloadManager.dart';
-import '../utils/SharedPrefs.dart';
 import '../utils/YoutubeData.dart';
 
 class HomePage extends StatelessWidget {
@@ -52,17 +51,17 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     DownloadManager().getDownloadedFiles().then((files) {
       YoutubeData().getPlaylists().then((data) => {
-            SharedPrefs().getRootData('folderPath').then((folderPath) {
-              videoData = data ?? {};
-              basePath = folderPath;
-              setState(() {
-                data?.forEach((key, value) {
-                  if (!files.containsKey("$key.mp3")) {
-                    DownloadManager().download(key);
-                  }
-                });
-              });
-            })
+            Constants().getAppSpecificFilesDir().then((path) => {
+                  videoData = data ?? {},
+                  basePath = path,
+                  setState(() {
+                    data?.forEach((key, value) {
+                      if (!files.containsKey("$key.mp3")) {
+                        DownloadManager().download(key);
+                      }
+                    });
+                  })
+                })
           });
     });
   }
@@ -114,7 +113,8 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                           onTap: () {
                             final player = AudioPlayer();
-                            String path = "$basePath/mp3/${videoData.values.elementAt(index)['id']}.mp3";
+                            String path =
+                                "$basePath/mp3/${videoData.values.elementAt(index)['id']}.mp3";
                             player.play(DeviceFileSource(path));
                           },
                         );
