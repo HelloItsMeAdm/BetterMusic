@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../utils/Constants.dart';
 import '../utils/DownloadManager.dart';
 import '../utils/InternetCheck.dart';
+import '../utils/Themes.dart';
 import '../utils/YoutubeData.dart';
 
 class HomePage extends StatelessWidget {
@@ -14,8 +15,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: MyHomePage(title: 'Welcome!'),
+    return MaterialApp(
+      home: const MyHomePage(title: 'Welcome!'),
+      theme: Themes.getDarkTheme(),
     );
   }
 }
