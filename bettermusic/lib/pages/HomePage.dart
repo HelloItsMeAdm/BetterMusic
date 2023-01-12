@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../utils/Constants.dart';
 import '../utils/DownloadManager.dart';
+import '../utils/InternetCheck.dart';
 import '../utils/YoutubeData.dart';
 
 class HomePage extends StatelessWidget {
@@ -55,9 +56,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   videoData = data ?? {},
                   basePath = path,
                   setState(() {
-                    data?.forEach((key, value) {
+                    data?.forEach((key, value) async {
                       if (!files.containsKey("$key.mp3")) {
-                        DownloadManager().download(key);
+                        videoData[key]["downloadState"] = 0;
+                        if (await InternetCheck().canUseInternet()) {
+                          DownloadManager().download(key).then((_) => {
+                                setState(() {
+                                  videoData[key]["downloadState"] = 2;
+                                })
+                              });
+                          videoData[key]["downloadState"] = 1;
+                        }
+                      } else {
+                        videoData[key]["downloadState"] = 2;
                       }
                     });
                   })
@@ -83,41 +94,73 @@ class _MyHomePageState extends State<MyHomePage> {
                       shrinkWrap: true,
                       itemCount: videoData.length,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(videoData.values.elementAt(index)['title']),
-                          subtitle: Text(
-                              "${videoData.values.elementAt(index)['author']} - ${videoData.values.elementAt(index)['id']}"),
-                          leading: SizedBox(
-                            width: 95,
-                            height: 110,
-                            child: Stack(
-                              children: [
-                                const Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                                Center(
-                                  child: Opacity(
-                                    opacity: _opacity,
-                                    child: Image.file(
-                                      basePath == ''
-                                          ? File(videoData.values
-                                              .elementAt(index)['thumbnail'])
-                                          : File(
-                                              "$basePath/thumbnails/${videoData.values.elementAt(index)['id']}.jpg"),
-                                      fit: BoxFit.cover,
+                        final String key = videoData.keys.elementAt(index);
+                        final Map value = videoData[key];
+
+                        if (value["downloadState"] == 2) {
+                          return ListTile(
+                            title: Text(value["title"]),
+                            subtitle: Text("${value["author"]}"),
+                            leading: SizedBox(
+                              width: 95,
+                              height: 110,
+                              child: Stack(
+                                children: [
+                                  const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  Center(
+                                    child: Opacity(
+                                      opacity: _opacity,
+                                      child: Image.file(
+                                        basePath == ''
+                                            ? File(value['thumbnail'])
+                                            : File(
+                                                "$basePath/thumbnails/${value['id']}.jpg"),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          onTap: () {
-                            final player = AudioPlayer();
-                            String path =
-                                "$basePath/mp3/${videoData.values.elementAt(index)['id']}.mp3";
-                            player.play(DeviceFileSource(path));
-                          },
-                        );
+                            onTap: () {
+                              final player = AudioPlayer();
+                              String path = "$basePath/mp3/${value['id']}.mp3";
+                              player.play(DeviceFileSource(path));
+                            },
+                          );
+                        } else if (value["downloadState"] == 0) {
+                          return ListTile(
+                            title: Text(value["title"],
+                                style: const TextStyle(color: Colors.grey)),
+                            subtitle: Text("${value["author"]}",
+                                style: const TextStyle(color: Colors.grey)),
+                            leading: SizedBox(
+                              width: 95,
+                              height: 110,
+                              child: Center(
+                                  child: RichText(
+                                text: const TextSpan(
+                                  text: "Not downloaded",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                textAlign: TextAlign.center,
+                              )),
+                            ),
+                          );
+                        } else {
+                          return ListTile(
+                              title: Text(value["title"]),
+                              subtitle: Text("${value["author"]}"),
+                              leading: const SizedBox(
+                                width: 95,
+                                height: 110,
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ));
+                        }
                       },
                     );
                   } else {
