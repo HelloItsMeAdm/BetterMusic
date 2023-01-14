@@ -18,9 +18,9 @@ void main() async {
     if (googleUser == null) {
       runApp(const LoginPage());
     } else {
-      runApp(const HomePage());
+      runApp(const HomePage(offlineMode: false));
     }
   } else {
-    runApp(const HomePage());
+    runApp(const HomePage(offlineMode: true));
   }
 }

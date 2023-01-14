@@ -47,7 +47,7 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
                 // Get the authorization code and print it
                 await googleUser?.authentication.then((value) => {
-                  runApp(const HomePage()),
+                  runApp(const HomePage(offlineMode: false)),
                 });
 
                 setState(() {

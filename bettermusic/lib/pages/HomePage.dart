@@ -5,27 +5,31 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/Constants.dart';
+import '../utils/CustomColors.dart';
 import '../utils/DownloadManager.dart';
 import '../utils/InternetCheck.dart';
+import '../utils/SharedPrefs.dart';
 import '../utils/Themes.dart';
 import '../utils/YoutubeData.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.offlineMode});
+
+  final bool offlineMode;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const MyHomePage(title: 'Welcome!'),
-      theme: Themes.getDarkTheme(),
+      home: MyHomePage(offlineMode: offlineMode),
+      theme: Themes.getDarkTheme(offlineMode: offlineMode),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  final bool offlineMode;
 
-  final String title;
+  const MyHomePage({super.key, required this.offlineMode});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -53,28 +57,45 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
     DownloadManager().getDownloadedFiles().then((files) {
-      YoutubeData().getPlaylists().then((data) => {
-            Constants().getAppSpecificFilesDir().then((path) => {
-                  videoData = data ?? {},
-                  basePath = path,
-                  setState(() {
-                    data?.forEach((key, value) async {
-                      if (!files.containsKey("$key.mp3")) {
-                        videoData[key]["downloadState"] = 0;
-                        if (await InternetCheck().canUseInternet()) {
-                          DownloadManager().download(key).then((_) => {
-                                setState(() {
-                                  videoData[key]["downloadState"] = 2;
-                                })
-                              });
-                          videoData[key]["downloadState"] = 1;
-                        }
-                      } else {
-                        videoData[key]["downloadState"] = 2;
-                      }
-                    });
-                  })
-                })
+      Constants().getAppSpecificFilesDir().then((path) async => {
+            basePath = path,
+            if (await InternetCheck().canUseInternet())
+              {
+                YoutubeData().getPlaylists().then((data) => {
+                      videoData = data ?? {},
+                      setState(() {
+                        data?.forEach((key, value) async {
+                          if (!files.containsKey("$key.mp3")) {
+                            videoData[key]["downloadState"] = 1;
+                            if (await InternetCheck().canUseInternet()) {
+                              DownloadManager().download(key).then((_) => {
+                                    setState(() {
+                                      videoData[key]["downloadState"] = 2;
+                                    })
+                                  });
+                            }
+                          } else {
+                            videoData[key]["downloadState"] = 2;
+                          }
+                        });
+                      }),
+                    }),
+              }
+            else
+              {
+                SharedPrefs().getMapData().then((data) => {
+                      videoData = data,
+                      setState(() {
+                        data.forEach((key, value) async {
+                          if (!files.containsKey("$key.mp3")) {
+                            videoData[key]["downloadState"] = 0;
+                          } else {
+                            videoData[key]["downloadState"] = 2;
+                          }
+                        });
+                      }),
+                    }),
+              },
           });
     });
   }
@@ -83,7 +104,47 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          centerTitle: true,
+          backgroundColor:
+              widget.offlineMode ? CustomColors.gray : CustomColors.primaryColor,
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(50),
+                child: widget.offlineMode
+                    ? Container(
+                        foregroundDecoration: const BoxDecoration(
+                          color: Colors.grey,
+                          backgroundBlendMode: BlendMode.saturation,
+                        ),
+                        child: Image.asset(
+                          'assets/images/logo_round.png',
+                          fit: BoxFit.contain,
+                          height: 32,
+                        ),
+                      )
+                    : Image.asset(
+                        'assets/images/logo_round.png',
+                        fit: BoxFit.contain,
+                        height: 32,
+                      ),
+              ),
+              Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    widget.offlineMode
+                        ? "BetterMusic - Offline mode"
+                        : "BetterMusic - Online mode!",
+                    style: TextStyle(
+                      color: widget.offlineMode
+                          ? CustomColors.primaryColor
+                          : Colors.black,
+                      fontSize: 20,
+                    ),
+                  )),
+            ],
+          ),
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -98,6 +159,10 @@ class _MyHomePageState extends State<MyHomePage> {
                       itemBuilder: (context, index) {
                         final String key = videoData.keys.elementAt(index);
                         final Map value = videoData[key];
+
+                        // 0 Not downloaded
+                        // 1 Downloading
+                        // 2 Downloaded
 
                         if (value["downloadState"] == 2) {
                           return ListTile(

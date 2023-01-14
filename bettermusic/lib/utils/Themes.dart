@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'CustomColors.dart';
 
 class Themes {
-  static ThemeData getDarkTheme() {
+  static ThemeData getDarkTheme({required bool offlineMode}) {
     return ThemeData(
       primaryColor: CustomColors.primaryColor,
       backgroundColor: CustomColors.darkGray,
@@ -18,11 +18,6 @@ class Themes {
           color: Colors.white,
           fontSize: 12,
           fontWeight: FontWeight.normal,
-        ),
-        // appbar
-        headline6: TextStyle(
-          color: Colors.white,
-          fontSize: 20,
         ),
       ),
       colorScheme:
