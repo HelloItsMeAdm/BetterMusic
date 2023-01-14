@@ -23,6 +23,34 @@
             </list>
           </value>
         </entry>
+        <entry key="audio_service">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/audio_service-0.18.9/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="audio_service_platform_interface">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/audio_service_platform_interface-0.1.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="audio_service_web">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/audio_service_web-0.1.1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="audio_session">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/audio_session-0.1.13/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="audioplayers">
           <value>
             <list>
@@ -170,6 +198,13 @@
             </list>
           </value>
         </entry>
+        <entry key="flutter_cache_manager">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/flutter_cache_manager-3.3.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="flutter_lints">
           <value>
             <list>
@@ -282,6 +317,34 @@
             </list>
           </value>
         </entry>
+        <entry key="just_audio">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/just_audio-0.9.31/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="just_audio_background">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/just_audio_background-0.0.1-beta.9/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="just_audio_platform_interface">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/just_audio_platform_interface-4.2.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="just_audio_web">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/just_audio_web-0.4.7/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="lints">
           <value>
             <list>
@@ -307,6 +370,13 @@
           <value>
             <list>
               <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/meta-1.8.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="nested">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/nested-1.0.0/lib" />
             </list>
           </value>
         </entry>
@@ -373,6 +443,13 @@
             </list>
           </value>
         </entry>
+        <entry key="pedantic">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.1/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="permission_handler">
           <value>
             <list>
@@ -436,10 +513,24 @@
             </list>
           </value>
         </entry>
+        <entry key="provider">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/provider-6.0.5/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="quiver">
           <value>
             <list>
               <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/quiver-3.2.1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="rxdart">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/rxdart-0.27.7/lib" />
             </list>
           </value>
         </entry>
@@ -513,6 +604,20 @@
             </list>
           </value>
         </entry>
+        <entry key="sqflite">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/sqflite-2.2.3/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="sqflite_common">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/sqflite_common-2.4.1/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="stack_trace">
           <value>
             <list>
@@ -531,6 +636,13 @@
           <value>
             <list>
               <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/string_scanner-1.1.1/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="synchronized">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/synchronized-3.0.1/lib" />
             </list>
           </value>
         </entry>
@@ -659,6 +771,10 @@
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/_discoveryapis_commons-1.0.5/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/args-2.3.1/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/async-2.9.0/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/audio_service-0.18.9/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/audio_service_platform_interface-0.1.0/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/audio_service_web-0.1.1/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/audio_session-0.1.13/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/audioplayers-1.2.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/audioplayers_android-1.1.3/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/audioplayers_darwin-1.0.4/lib" />
@@ -679,6 +795,7 @@
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/fake_async-1.3.1/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/ffi-2.0.1/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/file-6.1.4/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/flutter_cache_manager-3.3.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/flutter_lints-2.0.1/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/freezed_annotation-2.2.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/google_sign_in-5.4.2/lib" />
@@ -693,10 +810,15 @@
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/http_parser-4.0.2/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/js-0.6.4/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/json_annotation-4.7.0/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/just_audio-0.9.31/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/just_audio_background-0.0.1-beta.9/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/just_audio_platform_interface-4.2.0/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/just_audio_web-0.4.7/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/lints-2.0.1/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/matcher-0.12.12/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/material_color_utilities-0.1.5/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/meta-1.8.0/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/nested-1.0.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/nm-0.5.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/path-1.8.2/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/path_provider-2.0.11/lib" />
@@ -706,6 +828,7 @@
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/path_provider_macos-2.0.6/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/path_provider_platform_interface-2.0.5/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/path_provider_windows-2.1.3/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/pedantic-1.11.1/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/permission_handler-10.2.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/permission_handler_android-10.2.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/permission_handler_apple-9.0.7/lib" />
@@ -715,7 +838,9 @@
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/platform-3.1.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/plugin_platform_interface-2.1.3/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/process-4.2.4/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/provider-6.0.5/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/quiver-3.2.1/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/rxdart-0.27.7/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/shared_preferences-2.0.15/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/shared_preferences_android-2.0.14/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/shared_preferences_ios-2.1.1/lib" />
@@ -725,9 +850,12 @@
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/shared_preferences_web-2.0.4/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/shared_preferences_windows-2.1.2/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/source_span-1.9.0/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/sqflite-2.2.3/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/sqflite_common-2.4.1/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/stack_trace-1.10.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/stream_channel-2.1.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/string_scanner-1.1.1/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/synchronized-3.0.1/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/term_glyph-1.2.1/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/test_api-0.4.12/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/typed_data-1.3.1/lib" />

@@ -1,9 +1,9 @@
 import 'dart:core';
 import 'dart:io';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
+import '../player/Player.dart';
 import '../utils/Constants.dart';
 import '../utils/CustomColors.dart';
 import '../utils/DownloadManager.dart';
@@ -137,9 +137,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         ? "BetterMusic - Offline mode"
                         : "BetterMusic - Online mode!",
                     style: TextStyle(
-                      color: widget.offlineMode
-                          ? CustomColors.primaryColor
-                          : Colors.black,
+                      color:
+                          widget.offlineMode ? CustomColors.primaryColor : Colors.black,
                       fontSize: 20,
                     ),
                   )),
@@ -192,9 +191,11 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                             ),
                             onTap: () {
-                              final player = AudioPlayer();
-                              String path = "$basePath/mp3/${value['id']}.mp3";
-                              player.play(DeviceFileSource(path));
+                              Player().play(
+                                  "$basePath/mp3/${value['id']}.mp3",
+                                  value["title"],
+                                  value["author"],
+                                  "$basePath/thumbnails/${value['id']}.jpg");
                             },
                           );
                         } else if (value["downloadState"] == 0) {

@@ -1,9 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.helloitsmeadm.bettermusic.bettermusic">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name="${applicationName}"
@@ -12,7 +15,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/logo_rounded">
         <activity
-            android:name=".MainActivity"
+            android:name="com.ryanheise.audioservice.AudioServiceActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:exported="true"
             android:hardwareAccelerated="true"
@@ -36,5 +39,21 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- ADD THIS "SERVICE" element -->
+        <service android:name="com.ryanheise.audioservice.AudioService"
+            android:exported="true"
+            android:foregroundServiceType="mediaPlayback" tools:ignore="Instantiatable">
+            <intent-filter>
+                <action android:name="android.media.browse.MediaBrowserService" />
+            </intent-filter>
+        </service>
+
+        <!-- ADD THIS "RECEIVER" element -->
+        <receiver android:name="com.ryanheise.audioservice.MediaButtonReceiver"
+            android:exported="true" tools:ignore="Instantiatable">
+            <intent-filter>
+                <action android:name="android.intent.action.MEDIA_BUTTON" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

@@ -49,6 +49,9 @@ dependencies:
   youtube_explode_dart: ^1.12.3
   permission_handler: ^10.2.0
   audioplayers: ^1.2.0
+  provider: ^6.0.5
+  just_audio_background: ^0.0.1-beta.9
+  just_audio: ^0.9.31
 
 dev_dependencies:
   flutter_test:
