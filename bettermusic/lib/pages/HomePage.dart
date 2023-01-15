@@ -192,8 +192,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ),
                           onTap: () {
-                            Player().seekTo(
-                                (value["position"] - 1), videoData, basePath, context);
+                            Player().play(videoData, basePath, index, context, true);
                           },
                         );
                       } else if (value["downloadState"] == 0) {
@@ -239,7 +238,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Player().playlist(videoData, basePath, 0);
+          Player().play(videoData, basePath, 0, context, false);
         },
         backgroundColor: CustomColors.primaryColor,
         child: const Icon(Icons.play_arrow),
