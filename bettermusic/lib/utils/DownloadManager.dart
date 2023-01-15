@@ -63,7 +63,7 @@ class DownloadManager {
   }
 
   Future<void> downloadThumbnail(String thumbnailPath, String id) async {
-    id = "https://img.youtube.com/vi/$id/0.jpg";
+    id = "https://i.ytimg.com/vi/$id/maxresdefault.jpg";
     if (kDebugMode) {
       print("Downloading thumbnail for $id");
     }
