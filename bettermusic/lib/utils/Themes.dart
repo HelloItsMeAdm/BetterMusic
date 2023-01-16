@@ -8,6 +8,10 @@ class Themes {
       primaryColor: CustomColors.primaryColor,
       backgroundColor: CustomColors.darkGray,
       scaffoldBackgroundColor: CustomColors.darkGray,
+      fontFamily: "Poppins",
+      // Light 300
+      // Medium 500
+      // SemiBold 600
       textTheme: const TextTheme(
         subtitle1: TextStyle(
           color: CustomColors.primaryColor,

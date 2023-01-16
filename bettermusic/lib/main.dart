@@ -15,6 +15,7 @@ Future<void> main() async {
     androidNotificationOngoing: true,
     androidNotificationChannelId: 'com.helloitsmeadm.bettermusic.audio',
     androidNotificationIcon: "mipmap/logo_rounded",
+    androidNotificationChannelDescription: 'Shows the current audio playback',
   );
 
   // Request access to files permission

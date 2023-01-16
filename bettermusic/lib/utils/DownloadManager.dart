@@ -24,7 +24,7 @@ class DownloadManager {
     }
 
     if (kDebugMode) {
-      print("Downloading $id");
+      print("Downloading mp3 for $id");
     }
 
     final manifest = await yt.videos.streamsClient.getManifest(id);
@@ -44,7 +44,7 @@ class DownloadManager {
     await fileStream.close();
 
     if (kDebugMode) {
-      print("Downloaded mp3 for id $id");
+      print("Downloaded mp3 for $id");
     }
   }
 
@@ -63,7 +63,6 @@ class DownloadManager {
   }
 
   Future<void> downloadThumbnail(String thumbnailPath, String id) async {
-    id = "https://i.ytimg.com/vi/$id/maxresdefault.jpg";
     if (kDebugMode) {
       print("Downloading thumbnail for $id");
     }
@@ -71,7 +70,8 @@ class DownloadManager {
       return;
     }
 
-    final HttpClientRequest request = await HttpClient().getUrl(Uri.parse(id));
+    final HttpClientRequest request = await HttpClient()
+        .getUrl(Uri.parse("https://i.ytimg.com/vi/$id/maxresdefault.jpg"));
     final HttpClientResponse response = await request.close();
 
     final File file = File(thumbnailPath);
@@ -92,6 +92,30 @@ class DownloadManager {
     }
     if (!await thumbnailDir.exists()) {
       await thumbnailDir.create(recursive: true);
+    }
+  }
+
+  void removeOldFiles(Map videoData, String basePath) async {
+    //get all files in mp3 folder and if it is not in videoData, delete mp3 and thumbnail
+    //paths
+    //$basePath/mp3/$id.mp3
+    //$basePath/thumbnails/$id.jpg
+
+    final List<FileSystemEntity> files = Directory("$basePath/mp3").listSync();
+    for (final FileSystemEntity file in files) {
+      final String name = file.path.split("/").last.replaceAll(".mp3", "");
+      if (!videoData.containsKey(name)) {
+        print("Deleting $basePath/mp3/$name.mp3");
+        print("Deleting $basePath/thumbnails/$name.jpg");
+
+        if (await File("$basePath/mp3/$name.mp3").exists()) {
+          await File("$basePath/mp3/$name.mp3").delete();
+        }
+        if (await File("$basePath/thumbnails/$name.jpg").exists()) {
+          await File("$basePath/thumbnails/$name.jpg").delete();
+        }
+        return;
+      }
     }
   }
 }

@@ -52,6 +52,7 @@ dependencies:
   provider: ^6.0.5
   just_audio_background: ^0.0.1-beta.9
   just_audio: ^0.9.31
+  marquee: ^2.2.3
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +79,16 @@ flutter:
     - assets/images/logo.png
     - assets/images/logo_round.png
     - assets/images/google_logo.png
+
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: fonts/Poppins-Light.ttf
+        - asset: fonts/Poppins-LightItalic.ttf
+        - asset: fonts/Poppins-Medium.ttf
+        - asset: fonts/Poppins-MediumItalic.ttf
+        - asset: fonts/Poppins-SemiBold.ttf
+        - asset: fonts/Poppins-SemiBoldItalic.ttf
 
   # To add assets to your application, add an assets section, like this:
   # assets:
