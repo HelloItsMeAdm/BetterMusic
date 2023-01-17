@@ -281,7 +281,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             ),
                           ),
                           onTap: () {
-                            Player().play(videoData, basePath, index, context, true);
+                            Player().play(videoData, basePath, index, context);
                           },
                         );
                       } else if (value["downloadState"] == 0) {

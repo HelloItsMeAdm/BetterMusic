@@ -3,15 +3,13 @@ import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
 AudioPlayer audioPlayer = AudioPlayer();
-int lastIndex = 0;
 bool _isPlaylistSet = audioPlayer.audioSource != null;
 
 class Player {
-  void play(Map videoData, String path, int index, BuildContext context, bool useIndex) {
-    index = useIndex ? index : lastIndex;
+  void play(Map videoData, String path, int index, BuildContext context) {
     String message = "";
     if (_isPlaylistSet) {
-      if (index == lastIndex) {
+      if (index == audioPlayer.currentIndex) {
         if (audioPlayer.playing) {
           audioPlayer.pause();
           message = "Paused";
@@ -48,7 +46,6 @@ class Player {
       _isPlaylistSet = true;
       message = "Set playlist and played $index";
     }
-    lastIndex = index;
 
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text(message),
@@ -66,26 +63,17 @@ class Player {
 
   void previous() async {
     await audioPlayer.seekToPrevious();
-    lastIndex = audioPlayer.currentIndex!;
   }
 
-  void next() async{
+  void next() async {
     await audioPlayer.seekToNext();
-    lastIndex = audioPlayer.currentIndex!;
   }
 
   Future<Map<String, dynamic>> playPause(
       Map videoData, String basePath, BuildContext context) async {
-    play(videoData, basePath, lastIndex, context, false);
+    play(videoData, basePath, audioPlayer.currentIndex ?? 0, context);
 
-    return {
-      "title": videoData.entries.elementAt(lastIndex).value['title'],
-      "author": videoData.entries.elementAt(lastIndex).value['author'],
-      "thumbnail":
-          "$basePath/thumbnails/${videoData.entries.elementAt(lastIndex).key}.jpg",
-      "playPause": audioPlayer.playing,
-      "shuffle": audioPlayer.shuffleModeEnabled,
-    };
+    return getData(videoData, basePath);
   }
 
   Future<bool> shuffle() async {
@@ -99,10 +87,11 @@ class Player {
 
   Map<String, dynamic> getData(Map videoData, String basePath) {
     return {
-      "title": videoData.entries.elementAt(lastIndex).value['title'],
-      "author": videoData.entries.elementAt(lastIndex).value['author'],
+      "title": videoData.entries.elementAt(audioPlayer.currentIndex ?? 0).value['title'],
+      "author":
+          videoData.entries.elementAt(audioPlayer.currentIndex ?? 0).value['author'],
       "thumbnail":
-          "$basePath/thumbnails/${videoData.entries.elementAt(lastIndex).key}.jpg",
+          "$basePath/thumbnails/${videoData.entries.elementAt(audioPlayer.currentIndex ?? 0).key}.jpg",
       "playPause": audioPlayer.playing,
       "shuffle": audioPlayer.shuffleModeEnabled,
     };
