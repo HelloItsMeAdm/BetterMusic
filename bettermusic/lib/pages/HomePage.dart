@@ -24,7 +24,8 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: MyHomePage(offlineMode: offlineMode),
-      theme: Themes.getDarkTheme(offlineMode: offlineMode),
+      theme: Themes.getDarkTheme(),
+      title: Constants.APP_NAME,
     );
   }
 }
@@ -255,7 +256,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
                       if (value["downloadState"] == 2) {
                         return ListTile(
-                          title: Text(value["title"]),
+                          title: Text(
+                            value["title"],
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                           subtitle: Text("${value["author"]}"),
                           leading: SizedBox(
                             width: 90,
@@ -287,6 +292,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       } else if (value["downloadState"] == 0) {
                         return ListTile(
                           title: Text(value["title"],
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
                               style: const TextStyle(color: Colors.grey)),
                           subtitle: Text("${value["author"]}",
                               style: const TextStyle(color: Colors.grey)),
@@ -305,7 +312,11 @@ class _MyHomePageState extends State<MyHomePage> {
                         );
                       } else {
                         return ListTile(
-                            title: Text(value["title"]),
+                            title: Text(
+                              value["title"],
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                             subtitle: Text("${value["author"]}"),
                             leading: const SizedBox(
                               width: 90,

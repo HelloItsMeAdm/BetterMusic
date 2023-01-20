@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
+import '../utils/SharedPrefs.dart';
+
 AudioPlayer audioPlayer = AudioPlayer();
 bool _isPlaylistSet = audioPlayer.audioSource != null;
 
 class Player {
-  void play(Map videoData, String path, int index, BuildContext context) {
+  Future<void> play(Map videoData, String path, int index, BuildContext context) async {
     String message = "";
     if (_isPlaylistSet) {
       if (index == audioPlayer.currentIndex) {
@@ -40,6 +42,7 @@ class Player {
       );
 
       audioPlayer.setLoopMode(LoopMode.all);
+      audioPlayer.setShuffleModeEnabled(await SharedPrefs().getBoolData("isShuffle", false));
       audioPlayer.seek(Duration.zero, index: index);
       audioPlayer.play();
 

@@ -3,29 +3,28 @@ import 'package:flutter/material.dart';
 import '../utils/Constants.dart';
 import '../utils/CustomColors.dart';
 import '../utils/Themes.dart';
-import '../widgets/GoogleSignInButton.dart';
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+class StartLoading extends StatelessWidget {
+  const StartLoading({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const MyLoginPage(),
+      home: const StartLoadingPage(),
       theme: Themes.getDarkTheme(),
       title: Constants.APP_NAME,
     );
   }
 }
 
-class MyLoginPage extends StatefulWidget {
-  const MyLoginPage({super.key});
+class StartLoadingPage extends StatefulWidget {
+  const StartLoadingPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  _StartLoadingState createState() => _StartLoadingState();
 }
 
-class _LoginPageState extends State<MyLoginPage> {
+class _StartLoadingState extends State<StartLoadingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,7 +62,7 @@ class _LoginPageState extends State<MyLoginPage> {
                       ),
                     ),
                     const Text(
-                      'Listen to music like never before',
+                      'Loading...',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 20,
@@ -74,7 +73,9 @@ class _LoginPageState extends State<MyLoginPage> {
               ),
               const SizedBox(height: 20),
               const Center(
-                child: GoogleSignInButton(),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
               ),
               const SizedBox(height: 20),
             ],

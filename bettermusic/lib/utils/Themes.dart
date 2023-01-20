@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'CustomColors.dart';
 
 class Themes {
-  static ThemeData getDarkTheme({required bool offlineMode}) {
+  static ThemeData getDarkTheme() {
     return ThemeData(
       primaryColor: CustomColors.primaryColor,
       backgroundColor: CustomColors.darkGray,
