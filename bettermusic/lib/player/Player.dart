@@ -42,7 +42,9 @@ class Player {
       );
 
       audioPlayer.setLoopMode(LoopMode.all);
-      audioPlayer.setShuffleModeEnabled(await SharedPrefs().getBoolData("isShuffle", false));
+      if (audioPlayer.shuffleModeEnabled) {
+        audioPlayer.shuffle();
+      }
       audioPlayer.seek(Duration.zero, index: index);
       audioPlayer.play();
 
