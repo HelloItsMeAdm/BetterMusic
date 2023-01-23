@@ -1,6 +1,5 @@
 import 'package:bettermusic/pages/HomePage.dart';
 import 'package:bettermusic/pages/LoginPage.dart';
-import 'package:bettermusic/pages/StartLoading.dart';
 import 'package:bettermusic/utils/InternetCheck.dart';
 import 'package:bettermusic/utils/SharedPrefs.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +8,6 @@ import 'package:just_audio_background/just_audio_background.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 Future<void> main() async {
-  runApp(const StartLoading());
-
   WidgetsFlutterBinding.ensureInitialized();
 
   // Init for just audio

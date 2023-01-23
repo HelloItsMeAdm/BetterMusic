@@ -4,27 +4,28 @@ import '../utils/Constants.dart';
 import '../utils/CustomColors.dart';
 import '../utils/Themes.dart';
 
-class StartLoading extends StatelessWidget {
-  const StartLoading({super.key});
+class LoadingScreen extends StatelessWidget {
+  const LoadingScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const StartLoadingPage(),
+      home: const LoadingScreenPage(),
       theme: Themes.getDarkTheme(),
       title: Constants.APP_NAME,
     );
   }
 }
 
-class StartLoadingPage extends StatefulWidget {
-  const StartLoadingPage({super.key});
+class LoadingScreenPage extends StatefulWidget {
+  const LoadingScreenPage({super.key});
 
   @override
-  _StartLoadingState createState() => _StartLoadingState();
+  _LoadingScreenState createState() => _LoadingScreenState();
+
 }
 
-class _StartLoadingState extends State<StartLoadingPage> {
+class _LoadingScreenState extends State<LoadingScreenPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

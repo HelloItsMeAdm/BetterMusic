@@ -12,6 +12,7 @@ import '../utils/SharedPrefs.dart';
 import '../utils/Themes.dart';
 import '../utils/YoutubeData.dart';
 import '../widgets/PlayerBar.dart';
+import 'LoadingScreen.dart';
 
 bool oneRun = false;
 
@@ -39,16 +40,19 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMixin {
+  bool canShow = false;
   Map videoData = <String, dynamic>{};
   double _opacity = 0.0;
   String basePath = '';
   Icon playPauseIcon = const Icon(Icons.play_arrow);
-  String loadingStatus = 'Searching for files...';
   Map<String, dynamic> navbar = <String, dynamic>{
     'title': 'Better Music',
     'subtitle': 'Loading...',
   };
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -69,21 +73,14 @@ class _MyHomePageState extends State<MyHomePage> {
     }
     oneRun = true;
     DownloadManager().getDownloadedFiles().then((files) {
-      setState(() {
-        loadingStatus = 'Found ${files.length} files';
-      });
       Constants().getAppSpecificFilesDir().then((path) async => {
             basePath = path,
             if (await InternetCheck().canUseInternet())
               {
-                setState(() {
-                  loadingStatus = 'Downloading online playlist...';
-                }),
                 YoutubeData().getPlaylists().then((data) => {
                       if (videoData.isEmpty)
                         {
                           setState(() {
-                            loadingStatus = 'Finishing...';
                             navbar = {
                               'title':
                                   widget.offlineMode ? 'Offline Mode' : 'Online Mode',
@@ -109,19 +106,16 @@ class _MyHomePageState extends State<MyHomePage> {
                               }
                             });
                             DownloadManager().removeOldFiles(videoData, basePath);
+                            canShow = true;
                           })
                         }
                     }),
               }
             else
               {
-                setState(() {
-                  loadingStatus = 'Loading offline playlist...';
-                }),
                 SharedPrefs().getMapData().then((data) => {
                       videoData = data,
                       setState(() {
-                        loadingStatus = 'Finishing...';
                         data.forEach(
                           (key, value) async {
                             if (!files.containsKey("$key.mp3")) {
@@ -135,6 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           'title': widget.offlineMode ? 'Offline Mode' : 'Online Mode',
                           'subtitle': 'Found ${data.length} songs',
                         };
+                        canShow = true;
                       }),
                     }),
               },
@@ -144,107 +139,110 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor:
-            widget.offlineMode ? CustomColors.gray : CustomColors.primaryColor,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            color: widget.offlineMode ? CustomColors.primaryColor : Colors.black,
-            onPressed: () {
-              setState(() {
-                videoData = <String, dynamic>{};
-                oneRun = false;
-                getPlaylist();
-              });
-            },
-          ),
-        ],
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(50),
-              child: widget.offlineMode
-                  ? Container(
-                      foregroundDecoration: const BoxDecoration(
-                        color: Colors.grey,
-                        backgroundBlendMode: BlendMode.saturation,
+    super.build(context);
+    return FutureBuilder(
+      future: getPlaylist(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done && canShow) {
+          return Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              backgroundColor:
+                  widget.offlineMode ? CustomColors.gray : CustomColors.primaryColor,
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.refresh),
+                  color: widget.offlineMode ? CustomColors.primaryColor : Colors.black,
+                  onPressed: () {
+                    setState(() {
+                      videoData = <String, dynamic>{};
+                      oneRun = false;
+                      getPlaylist();
+                    });
+                  },
+                ),
+              ],
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(50),
+                    child: widget.offlineMode
+                        ? Container(
+                            foregroundDecoration: const BoxDecoration(
+                              color: Colors.grey,
+                              backgroundBlendMode: BlendMode.saturation,
+                            ),
+                            child: Image.asset(
+                              'assets/images/logo_round.png',
+                              fit: BoxFit.contain,
+                              height: 32,
+                            ),
+                          )
+                        : Image.asset(
+                            'assets/images/logo_round.png',
+                            fit: BoxFit.contain,
+                            height: 32,
+                          ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: "Better",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: widget.offlineMode
+                                  ? CustomColors.primaryColor
+                                  : Colors.black,
+                              fontSize: 20,
+                            ),
+                          ),
+                          TextSpan(
+                            text: "Music",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              color: widget.offlineMode
+                                  ? CustomColors.primaryColor
+                                  : Colors.black,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ],
                       ),
-                      child: Image.asset(
-                        'assets/images/logo_round.png',
-                        fit: BoxFit.contain,
-                        height: 32,
-                      ),
-                    )
-                  : Image.asset(
-                      'assets/images/logo_round.png',
-                      fit: BoxFit.contain,
-                      height: 32,
                     ),
+                  ),
+                ],
+              ),
             ),
-            Container(
-              padding: const EdgeInsets.all(8.0),
-              child: RichText(
-                text: TextSpan(
+            body: Column(
+              children: [
+                Column(
                   children: [
-                    TextSpan(
-                      text: "Better",
-                      style: TextStyle(
+                    const SizedBox(height: 10),
+                    Text(
+                      navbar['title'],
+                      style: const TextStyle(
+                        fontSize: 35,
                         fontWeight: FontWeight.w600,
-                        color:
-                            widget.offlineMode ? CustomColors.primaryColor : Colors.black,
-                        fontSize: 20,
+                        color: Colors.white,
                       ),
                     ),
-                    TextSpan(
-                      text: "Music",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        color:
-                            widget.offlineMode ? CustomColors.primaryColor : Colors.black,
-                        fontSize: 20,
+                    Text(
+                      navbar['subtitle'],
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w300,
+                        color: Colors.white,
                       ),
                     ),
+                    const SizedBox(height: 10),
                   ],
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      body: Column(
-        children: [
-          Column(
-            children: [
-              const SizedBox(height: 10),
-              Text(
-                navbar['title'],
-                style: const TextStyle(
-                  fontSize: 35,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                navbar['subtitle'],
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.white,
-                ),
-              ),
-              const SizedBox(height: 10),
-            ],
-          ),
-          Expanded(
-            child: FutureBuilder(
-              future: getPlaylist(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return ListView.builder(
+                Expanded(
+                  child: ListView.builder(
                     shrinkWrap: true,
                     itemCount: videoData.length,
                     itemBuilder: (context, index) {
@@ -328,35 +326,15 @@ class _MyHomePageState extends State<MyHomePage> {
                             ));
                       }
                     },
-                  );
-                } else {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        const CircularProgressIndicator(),
-                        const Text(
-                          "Welcome!",
-                          style: TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white),
-                        ),
-                        Text(loadingStatus,
-                            style: const TextStyle(
-                                fontSize: 15,
-                                color: Colors.white,
-                                fontWeight: FontWeight.w300)),
-                      ],
-                    ),
-                  );
-                }
-              },
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: PlayerBar(videoData: videoData, basePath: basePath),
+            bottomNavigationBar: PlayerBar(videoData: videoData, basePath: basePath),
+          );
+        }
+        return const LoadingScreen();
+      },
     );
   }
 }
