@@ -54,6 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     _loadImage();
+    Player().getShuffle();
   }
 
   void _loadImage() async {

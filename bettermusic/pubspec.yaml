@@ -54,6 +54,7 @@ dependencies:
   just_audio: ^0.9.31
   marquee: ^2.2.3
   animations: ^2.0.7
+  lottie: ^2.2.0
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +81,8 @@ flutter:
     - assets/images/logo.png
     - assets/images/logo_round.png
     - assets/images/google_logo.png
+    - assets/lotties/not_found.json
+    - assets/images/black.png
 
   fonts:
     - family: Poppins

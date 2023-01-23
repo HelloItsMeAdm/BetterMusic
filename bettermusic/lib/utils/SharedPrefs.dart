@@ -24,11 +24,18 @@ class SharedPrefs {
 
   Future<void> setDefaultValues() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setBool("isShuffle", false);
+    if (prefs.getBool("isShuffle") == null) {
+      prefs.setBool("isShuffle", false);
+    }
   }
 
   Future<bool> getBoolData(String key, bool defaultValue) async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool(key) ?? defaultValue;
+  }
+
+  void setBoolData(String key, bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool(key, value);
   }
 }

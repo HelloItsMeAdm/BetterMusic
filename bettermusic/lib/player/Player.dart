@@ -56,14 +56,6 @@ class Player {
     ));
   }
 
-  bool isPlaying() {
-    return audioPlayer.playing;
-  }
-
-  bool isShuffle() {
-    return audioPlayer.shuffleModeEnabled;
-  }
-
   void previous() async {
     await audioPlayer.seekToPrevious();
   }
@@ -79,13 +71,17 @@ class Player {
     return getData(videoData, basePath);
   }
 
-  Future<bool> shuffle() async {
-    if (audioPlayer.shuffleModeEnabled) {
-      audioPlayer.setShuffleModeEnabled(false);
-    } else {
-      audioPlayer.setShuffleModeEnabled(true);
-    }
-    return audioPlayer.shuffleModeEnabled;
+  void toggleShuffle() {
+    SharedPrefs().getBoolData("isShuffle", false).then((value) {
+      audioPlayer.setShuffleModeEnabled(!value);
+      SharedPrefs().setBoolData("isShuffle", !value);
+    });
+  }
+
+  void getShuffle() {
+    SharedPrefs().getBoolData("isShuffle", false).then((value) {
+      audioPlayer.setShuffleModeEnabled(value);
+    });
   }
 
   Map<String, dynamic> getData(Map videoData, String basePath) {
@@ -97,6 +93,20 @@ class Player {
           "$basePath/thumbnails/${videoData.entries.elementAt(audioPlayer.currentIndex ?? 0).key}.jpg",
       "playPause": audioPlayer.playing,
       "shuffle": audioPlayer.shuffleModeEnabled,
+      "currentPosition": audioPlayer.position.inSeconds,
+      "duration": audioPlayer.duration?.inSeconds ?? 0,
+      "index": audioPlayer.currentIndex ?? 0,
     };
+  }
+
+  void stop() {
+    audioPlayer.stop();
+  }
+
+  void seekToSecond(int second) {
+    audioPlayer.seek(Duration(seconds: second));
+    if (!audioPlayer.playing) {
+      audioPlayer.play();
+    }
   }
 }

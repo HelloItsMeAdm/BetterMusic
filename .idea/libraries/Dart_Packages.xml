@@ -16,6 +16,13 @@
             </list>
           </value>
         </entry>
+        <entry key="archive">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/archive-3.3.5/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="args">
           <value>
             <list>
@@ -146,6 +153,13 @@
           <value>
             <list>
               <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/connectivity_plus_platform_interface-1.2.3/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="convert">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/convert-3.1.1/lib" />
             </list>
           </value>
         </entry>
@@ -366,6 +380,13 @@
             </list>
           </value>
         </entry>
+        <entry key="lottie">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/lottie-2.2.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="marquee">
           <value>
             <list>
@@ -524,6 +545,13 @@
           <value>
             <list>
               <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/plugin_platform_interface-2.1.3/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="pointycastle">
+          <value>
+            <list>
+              <option value="C:/src/.pub-cache/hosted/pub.dartlang.org/pointycastle-3.6.2/lib" />
             </list>
           </value>
         </entry>
@@ -784,6 +812,7 @@
     <CLASSES>
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/_discoveryapis_commons-1.0.5/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/animations-2.0.7/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/archive-3.3.5/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/args-2.3.1/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/async-2.9.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/audio_service-0.18.9/lib" />
@@ -803,6 +832,7 @@
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/collection-1.16.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/connectivity_plus-3.0.2/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/connectivity_plus_platform_interface-1.2.3/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/convert-3.1.1/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/crypto-3.0.2/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/csslib-0.17.2/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/cupertino_icons-1.0.5/lib" />
@@ -831,6 +861,7 @@
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/just_audio_platform_interface-4.2.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/just_audio_web-0.4.7/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/lints-2.0.1/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/lottie-2.2.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/marquee-2.2.3/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/matcher-0.12.12/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/material_color_utilities-0.1.5/lib" />
@@ -854,6 +885,7 @@
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/petitparser-5.1.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/platform-3.1.0/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/plugin_platform_interface-2.1.3/lib" />
+      <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/pointycastle-3.6.2/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/process-4.2.4/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/provider-6.0.5/lib" />
       <root url="file://C:/src/.pub-cache/hosted/pub.dartlang.org/quiver-3.2.1/lib" />
