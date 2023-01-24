@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/HelloItsMeAdm/BetterMusic/blob/main/bettermusic/android/app/src/main/res/mipmap/ic_launcher.png" width="200" alt="Logo"/>
+  <img src="https://github.com/HelloItsMeAdm/BetterMusic/blob/main/bettermusic/assets/images/logo_round.png" width="200" alt="Logo"/>
 </p>
 
 # My first Flutter App project!
