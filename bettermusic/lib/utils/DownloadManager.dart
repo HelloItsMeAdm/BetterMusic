@@ -1,14 +1,17 @@
 import 'dart:io';
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
+import '../widgets/Snacker.dart';
 import 'Constants.dart';
 
 class DownloadManager {
   final YoutubeExplode yt = YoutubeExplode();
 
-  Future<void> download(String id) async {
+  Future<void> download(String id, BuildContext context, String title) async {
     String basePath = await Constants().getAppSpecificFilesDir();
 
     final String mp3Path = "$basePath/mp3/$id.mp3";
@@ -23,10 +26,6 @@ class DownloadManager {
       return;
     }
 
-    if (kDebugMode) {
-      print("Downloading mp3 for $id");
-    }
-
     final manifest = await yt.videos.streamsClient.getManifest(id);
     final streamInfo = manifest.audioOnly.withHighestBitrate();
 
@@ -36,16 +35,28 @@ class DownloadManager {
     var file = File(mp3Path);
     var fileStream = file.openWrite();
 
-    // Pipe all the content of the stream into the file.
+    Snacker().show(
+        context: context,
+        contentType: ContentType.warning,
+        title: "Downloading started...",
+        message: title);
+
+    // Write the stream to the file.
     await stream.pipe(fileStream);
 
     // Close the file.
     await fileStream.flush();
     await fileStream.close();
 
-    if (kDebugMode) {
-      print("Downloaded mp3 for $id");
+    //wait for the thumbnail to be downloaded and then show the snackbar
+    while (!await File(thumbnailPath).exists()) {
+      await Future.delayed(const Duration(milliseconds: 100));
     }
+    Snacker().show(
+        context: context,
+        contentType: ContentType.success,
+        title: "Download complete!",
+        message: title);
   }
 
   Future<Map> getDownloadedFiles() async {
@@ -63,9 +74,6 @@ class DownloadManager {
   }
 
   Future<void> downloadThumbnail(String thumbnailPath, String id) async {
-    if (kDebugMode) {
-      print("Downloading thumbnail for $id");
-    }
     if (await File(thumbnailPath).exists()) {
       return;
     }
@@ -76,10 +84,6 @@ class DownloadManager {
 
     final File file = File(thumbnailPath);
     await file.writeAsBytes(await consolidateHttpClientResponseBytes(response));
-
-    if (kDebugMode) {
-      print("Downloaded thumbnail for $id");
-    }
 
     return;
   }
@@ -95,18 +99,16 @@ class DownloadManager {
     }
   }
 
-  void removeOldFiles(Map videoData, String basePath) async {
-    //get all files in mp3 folder and if it is not in videoData, delete mp3 and thumbnail
-    //paths
-    //$basePath/mp3/$id.mp3
-    //$basePath/thumbnails/$id.jpg
-
+  void removeOldFiles(Map videoData, String basePath, BuildContext context) async {
     final List<FileSystemEntity> files = Directory("$basePath/mp3").listSync();
     for (final FileSystemEntity file in files) {
       final String name = file.path.split("/").last.replaceAll(".mp3", "");
       if (!videoData.containsKey(name)) {
-        print("Deleting $basePath/mp3/$name.mp3");
-        print("Deleting $basePath/thumbnails/$name.jpg");
+        Snacker().show(
+            context: context,
+            contentType: ContentType.failure,
+            title: "Found old file",
+            message: "$name.mp3");
 
         if (await File("$basePath/mp3/$name.mp3").exists()) {
           await File("$basePath/mp3/$name.mp3").delete();

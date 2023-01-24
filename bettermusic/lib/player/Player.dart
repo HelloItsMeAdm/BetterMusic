@@ -9,20 +9,12 @@ bool _isPlaylistSet = audioPlayer.audioSource != null;
 
 class Player {
   Future<void> play(Map videoData, String path, int index, BuildContext context) async {
-    String message = "";
     if (_isPlaylistSet) {
       if (index == audioPlayer.currentIndex) {
-        if (audioPlayer.playing) {
-          audioPlayer.pause();
-          message = "Paused";
-        } else {
-          audioPlayer.play();
-          message = "Resumed";
-        }
+        audioPlayer.playing ? audioPlayer.pause() : audioPlayer.play();
       } else {
         audioPlayer.seek(Duration.zero, index: index);
         audioPlayer.play();
-        message = "Seeked to $index";
       }
     } else {
       audioPlayer.setAudioSource(
@@ -49,13 +41,7 @@ class Player {
       audioPlayer.play();
 
       _isPlaylistSet = true;
-      message = "Set playlist and played $index";
     }
-
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text(message),
-      duration: const Duration(seconds: 1),
-    ));
   }
 
   void previous() async {

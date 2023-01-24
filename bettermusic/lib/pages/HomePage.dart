@@ -90,22 +90,24 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                             data?.forEach((key, value) async {
                               if (!files.containsKey("$key.mp3")) {
                                 videoData[key]["downloadState"] = 1;
-                                DownloadManager().download(key).then((_) => {
-                                      setState(() {
-                                        videoData[key]["downloadState"] = 2;
-                                        navbar = {
-                                          'title': widget.offlineMode
-                                              ? 'Offline Mode'
-                                              : 'Online Mode',
-                                          'subtitle': 'Found ${data.length} songs',
-                                        };
-                                      })
-                                    });
+                                DownloadManager()
+                                    .download(key, context, videoData[key]["title"])
+                                    .then((_) => {
+                                          setState(() {
+                                            videoData[key]["downloadState"] = 2;
+                                            navbar = {
+                                              'title': widget.offlineMode
+                                                  ? 'Offline Mode'
+                                                  : 'Online Mode',
+                                              'subtitle': 'Found ${data.length} songs',
+                                            };
+                                          })
+                                        });
                               } else {
                                 videoData[key]["downloadState"] = 2;
                               }
                             });
-                            DownloadManager().removeOldFiles(videoData, basePath);
+                            DownloadManager().removeOldFiles(videoData, basePath, context);
                             canShow = true;
                           })
                         }

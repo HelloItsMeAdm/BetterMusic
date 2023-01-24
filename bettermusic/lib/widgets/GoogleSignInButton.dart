@@ -1,3 +1,5 @@
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:bettermusic/widgets/Snacker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -47,6 +49,12 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
 
                 // Get the authorization code and print it
                 await googleUser?.authentication.then((value) => {
+                  Snacker().show(
+                    context: context,
+                    contentType: ContentType.success,
+                    title: "Success",
+                    message: "Signed in with Google",
+                  ),
                   runApp(const HomePage(offlineMode: false)),
                 });
 
