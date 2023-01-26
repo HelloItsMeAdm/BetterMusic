@@ -1,6 +1,7 @@
 import 'dart:core';
 import 'dart:io';
 
+import 'package:android_intent/android_intent.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:bettermusic/widgets/Snacker.dart';
 import 'package:flutter/material.dart';
@@ -195,6 +196,20 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                           message:
                               'Please connect to the internet to refresh the playlist');
                     }
+                  },
+                ),
+                IconButton(
+                  icon: Image.asset(
+                    'assets/images/youtubevanced.png',
+                  ),
+                  onPressed: () {
+                    Uri uri = Uri.parse("https://www.youtube.com/playlist?list=${Constants.PLAYLIST_ID}");
+                    AndroidIntent intent = AndroidIntent(
+                      action: 'action_view',
+                      data: uri.toString(),
+                      package: 'com.google.android.apps.youtube.app'
+                    );
+                    intent.launch();
                   },
                 ),
               ],
