@@ -107,7 +107,7 @@ class DownloadManager {
         Snacker().show(
             context: context,
             contentType: ContentType.failure,
-            title: "Found old file",
+            title: "Removed old file!",
             message: "$name.mp3");
 
         if (await File("$basePath/mp3/$name.mp3").exists()) {

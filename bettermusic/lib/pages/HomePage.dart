@@ -1,6 +1,8 @@
 import 'dart:core';
 import 'dart:io';
 
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:bettermusic/widgets/Snacker.dart';
 import 'package:flutter/material.dart';
 
 import '../player/Player.dart';
@@ -59,11 +61,32 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
     super.initState();
     _loadImage();
     Player().getShuffle();
+    checkForUpdates();
   }
 
   void _loadImage() async {
     setState(() {
       _opacity = 1.0;
+    });
+  }
+
+  void checkForUpdates() async {
+    if (!await InternetCheck().canUseInternet()) {
+      return;
+    }
+    // Every 3 seconds, check for updates
+    Future<void>.delayed(const Duration(seconds: 3), () async {
+      if (await InternetCheck().canUseInternet()) {
+        YoutubeData().getPlaylists().then((value) {
+          if (value != null && value.length != videoData.length) {
+            videoData = <String, dynamic>{};
+            oneRun = false;
+            canShow = false;
+            getPlaylist();
+          }
+          checkForUpdates();
+        });
+      }
     });
   }
 
@@ -107,7 +130,8 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                                 videoData[key]["downloadState"] = 2;
                               }
                             });
-                            DownloadManager().removeOldFiles(videoData, basePath, context);
+                            DownloadManager()
+                                .removeOldFiles(videoData, basePath, context);
                             canShow = true;
                           })
                         }
@@ -156,11 +180,21 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                   icon: const Icon(Icons.refresh),
                   color: widget.offlineMode ? CustomColors.primaryColor : Colors.black,
                   onPressed: () {
-                    setState(() {
-                      videoData = <String, dynamic>{};
-                      oneRun = false;
-                      getPlaylist();
-                    });
+                    if (widget.offlineMode) {
+                      setState(() {
+                        videoData = <String, dynamic>{};
+                        oneRun = false;
+                        canShow = false;
+                        getPlaylist();
+                      });
+                    } else {
+                      Snacker().show(
+                          context: context,
+                          contentType: ContentType.failure,
+                          title: 'No internet connection',
+                          message:
+                              'Please connect to the internet to refresh the playlist');
+                    }
                   },
                 ),
               ],
