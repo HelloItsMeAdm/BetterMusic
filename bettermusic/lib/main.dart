@@ -1,3 +1,4 @@
+import 'package:bettermusic/background/KeepOnBackground.dart';
 import 'package:bettermusic/pages/HomePage.dart';
 import 'package:bettermusic/pages/LoginPage.dart';
 import 'package:bettermusic/utils/InternetCheck.dart';
@@ -9,6 +10,9 @@ import 'package:permission_handler/permission_handler.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Keep app alive
+  await KeepOnBackground().initializeService();
 
   // Init for just audio
   await JustAudioBackground.init(

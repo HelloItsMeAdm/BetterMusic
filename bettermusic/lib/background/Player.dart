@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
@@ -8,7 +7,7 @@ AudioPlayer audioPlayer = AudioPlayer();
 bool _isPlaylistSet = audioPlayer.audioSource != null;
 
 class Player {
-  Future<void> play(Map videoData, String path, int index, BuildContext context) async {
+  Future<void> play(Map videoData, String path, int index) async {
     if (_isPlaylistSet) {
       if (index == audioPlayer.currentIndex) {
         audioPlayer.playing ? audioPlayer.pause() : audioPlayer.play();
@@ -52,9 +51,12 @@ class Player {
     await audioPlayer.seekToNext();
   }
 
-  Future<Map<String, dynamic>> playPause(
-      Map videoData, String basePath, BuildContext context) async {
-    play(videoData, basePath, audioPlayer.currentIndex ?? 0, context);
+  void pause() async {
+    await audioPlayer.pause();
+  }
+
+  Future<Map<String, dynamic>> playPause(Map videoData, String basePath) async {
+    play(videoData, basePath, audioPlayer.currentIndex ?? 0);
 
     return getData(videoData, basePath);
   }
@@ -89,12 +91,27 @@ class Player {
 
   void stop() {
     audioPlayer.stop();
+    _isPlaylistSet = false;
   }
 
   void seekToSecond(int second) {
     audioPlayer.seek(Duration(seconds: second));
     if (!audioPlayer.playing) {
       audioPlayer.play();
+    }
+  }
+
+  int pauseType() {
+    // 0 - playing
+    // 1 - paused by user
+    // 2 - stopped
+
+    if (audioPlayer.playing) {
+      return 0;
+    } else if (audioPlayer.playing == false && _isPlaylistSet) {
+      return 1;
+    } else {
+      return 2;
     }
   }
 }

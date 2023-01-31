@@ -5,7 +5,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-import '../player/Player.dart';
+import '../background/Player.dart';
 import '../utils/CustomColors.dart';
 
 class PlayerPage extends StatefulWidget {
@@ -153,7 +153,7 @@ class _PlayerPageState extends State<PlayerPage> {
                           ? CustomColors.primaryColor
                           : Colors.white,
                       onPressed: () {
-                        Player().playPause(widget.videoData, widget.basePath, context);
+                        Player().playPause(widget.videoData, widget.basePath);
                       },
                     ),
                     const SizedBox(width: 20.0),

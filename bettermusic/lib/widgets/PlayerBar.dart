@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:marquee/marquee.dart';
 
+import '../background/Player.dart';
 import '../pages/PlayerPage.dart';
-import '../player/Player.dart';
 import '../utils/CustomColors.dart';
 
 class PlayerBar extends StatefulWidget {
@@ -172,7 +172,7 @@ class _PlayerBarState extends State<PlayerBar> {
                                 color: CustomColors.primaryColor),
                         onPressed: () {
                           Player()
-                              .playPause(widget.videoData, widget.basePath, context)
+                              .playPause(widget.videoData, widget.basePath)
                               .then((value) {
                             setState(() {
                               playerData = value;

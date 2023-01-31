@@ -6,7 +6,7 @@ import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:bettermusic/widgets/Snacker.dart';
 import 'package:flutter/material.dart';
 
-import '../player/Player.dart';
+import '../background/Player.dart';
 import '../utils/Constants.dart';
 import '../utils/CustomColors.dart';
 import '../utils/DownloadManager.dart';
@@ -336,7 +336,7 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                             ),
                           ),
                           onTap: () {
-                            Player().play(videoData, basePath, index, context);
+                            Player().play(videoData, basePath, index);
                           },
                         );
                       } else if (value["downloadState"] == 0) {
