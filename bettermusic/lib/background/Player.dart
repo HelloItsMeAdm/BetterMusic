@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:just_audio/just_audio.dart';
 import 'package:just_audio_background/just_audio_background.dart';
 
@@ -36,8 +38,12 @@ class Player {
       if (audioPlayer.shuffleModeEnabled) {
         audioPlayer.shuffle();
       }
-      audioPlayer.seek(Duration.zero, index: index);
-      audioPlayer.play();
+      if (index != -1) {
+        audioPlayer.seek(Duration.zero, index: index);
+        audioPlayer.play();
+      } else {
+        audioPlayer.seek(Duration.zero, index: Random().nextInt(videoData.length));
+      }
 
       _isPlaylistSet = true;
     }
