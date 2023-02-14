@@ -42,7 +42,8 @@ class Player {
         audioPlayer.seek(Duration.zero, index: index);
         audioPlayer.play();
       } else {
-        audioPlayer.seek(Duration.zero, index: Random().nextInt(videoData.length));
+        int randomSong = Random().nextInt(videoData.length);
+        audioPlayer.seek(Duration.zero, index: randomSong);
       }
 
       _isPlaylistSet = true;
