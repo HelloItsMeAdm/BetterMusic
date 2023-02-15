@@ -191,8 +191,10 @@ class _MyHiddenSongsState extends State<MyHiddenSongs> {
                                 widget.videoData[key]["isHidden"] = false;
                                 SharedPrefs()
                                     .updateDataMap(widget.videoData, "currentSongs");
+                                Map tempData = Map.from(widget.videoData);
+                                tempData.removeWhere((key, value) => value["isHidden"]);
                                 Player()
-                                    .updatePlaylist(widget.videoData, widget.basePath);
+                                    .updatePlaylist(tempData, widget.basePath);
                                 setState(() {
                                   widget.videoData;
                                   navbar = {
