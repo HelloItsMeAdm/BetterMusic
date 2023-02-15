@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+
 import '../utils/Constants.dart';
 import 'GoogleAuth.dart';
 import 'InternetCheck.dart';
@@ -27,6 +28,8 @@ class YoutubeData {
           videoData[value['items'][i]['snippet']['resourceId']['videoId']] = {
             'id': value['items'][i]['snippet']['resourceId']['videoId'],
             'position': value['items'][i]['snippet']['position'],
+            'isHidden': await SharedPrefs()
+                .isHidden(value['items'][i]['snippet']['resourceId']['videoId']),
             'title': value['items'][i]['snippet']['title'],
             'author': value['items'][i]['snippet']['videoOwnerChannelTitle'],
             'url':

@@ -38,4 +38,12 @@ class SharedPrefs {
     final prefs = await SharedPreferences.getInstance();
     prefs.setBool(key, value);
   }
+
+  Future<bool> isHidden(String videoId) async {
+    final data = await getMapData();
+    if (data[videoId] == null) {
+      return false;
+    }
+    return data[videoId]['isHidden'];
+  }
 }

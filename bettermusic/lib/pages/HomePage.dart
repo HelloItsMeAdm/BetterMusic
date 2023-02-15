@@ -5,6 +5,7 @@ import 'package:android_intent/android_intent.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:bettermusic/widgets/Snacker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../background/Player.dart';
 import '../utils/Constants.dart';
@@ -15,6 +16,7 @@ import '../utils/SharedPrefs.dart';
 import '../utils/Themes.dart';
 import '../utils/YoutubeData.dart';
 import '../widgets/PlayerBar.dart';
+import 'HiddenSongs.dart';
 import 'LoadingScreen.dart';
 
 bool oneRun = false;
@@ -53,6 +55,8 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
     'title': 'Better Music',
     'subtitle': 'Loading...',
   };
+  int hiddenSongs = 0;
+  Map videoDataClear = <String, dynamic>{};
 
   @override
   bool get wantKeepAlive => true;
@@ -105,10 +109,15 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                       if (videoData.isEmpty)
                         {
                           setState(() {
+                            hiddenSongs = data?.values
+                                    .where((element) => element['isHidden'])
+                                    .length ??
+                                0;
                             navbar = {
                               'title':
                                   widget.offlineMode ? 'Offline Mode' : 'Online Mode',
-                              'subtitle': 'Found ${data?.length} songs',
+                              'subtitle':
+                                  'Showing ${(data?.length ?? 0) - hiddenSongs}/${data?.length ?? 0} songs',
                             };
                             videoData = data ?? {};
                             data?.forEach((key, value) async {
@@ -119,11 +128,15 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                                     .then((_) => {
                                           setState(() {
                                             videoData[key]["downloadState"] = 2;
+                                            hiddenSongs = data.values
+                                                .where((element) => element['isHidden'])
+                                                .length;
                                             navbar = {
                                               'title': widget.offlineMode
                                                   ? 'Offline Mode'
                                                   : 'Online Mode',
-                                              'subtitle': 'Found ${data.length} songs',
+                                              'subtitle':
+                                                  'Showing ${(data.length) - hiddenSongs}/${data.length} songs',
                                             };
                                           })
                                         });
@@ -133,6 +146,8 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                             });
                             DownloadManager()
                                 .removeOldFiles(videoData, basePath, context);
+                            videoDataClear = Map.from(videoData);
+                            videoDataClear.removeWhere((key, value) => value['isHidden']);
                             canShow = true;
                           })
                         }
@@ -152,10 +167,15 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                             }
                           },
                         );
+                        hiddenSongs =
+                            data.values.where((element) => element['isHidden']).length;
                         navbar = {
                           'title': widget.offlineMode ? 'Offline Mode' : 'Online Mode',
-                          'subtitle': 'Found ${data.length} songs',
+                          'subtitle':
+                              'Showing ${(data.length) - hiddenSongs}/${data.length} songs',
                         };
+                        videoDataClear = Map.from(videoData);
+                        videoDataClear.removeWhere((key, value) => value['isHidden']);
                         canShow = true;
                       }),
                     }),
@@ -181,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                   icon: const Icon(Icons.refresh),
                   color: widget.offlineMode ? CustomColors.primaryColor : Colors.black,
                   onPressed: () {
-                    if (widget.offlineMode) {
+                    if (!widget.offlineMode) {
                       setState(() {
                         videoData = <String, dynamic>{};
                         oneRun = false;
@@ -199,16 +219,32 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                   },
                 ),
                 IconButton(
+                  icon: const Icon(Icons.visibility),
+                  color: widget.offlineMode ? CustomColors.primaryColor : Colors.black,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HiddenSongs(
+                          offlineMode: widget.offlineMode,
+                          basePath: basePath,
+                          videoData: videoData,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                IconButton(
                   icon: Image.asset(
                     'assets/images/youtubevanced.png',
                   ),
                   onPressed: () {
-                    Uri uri = Uri.parse("https://www.youtube.com/playlist?list=${Constants.PLAYLIST_ID}");
+                    Uri uri = Uri.parse(
+                        "https://www.youtube.com/playlist?list=${Constants.PLAYLIST_ID}");
                     AndroidIntent intent = AndroidIntent(
-                      action: 'action_view',
-                      data: uri.toString(),
-                      package: 'com.google.android.apps.youtube.app'
-                    );
+                        action: 'action_view',
+                        data: uri.toString(),
+                        package: 'com.google.android.apps.youtube.app');
                     intent.launch();
                   },
                 ),
@@ -295,50 +331,88 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                 Expanded(
                   child: ListView.builder(
                     shrinkWrap: true,
-                    itemCount: videoData.length,
+                    itemCount: videoDataClear.length,
                     itemBuilder: (context, index) {
-                      final String key = videoData.keys.elementAt(index);
-                      final Map value = videoData[key];
+                      final String key = videoDataClear.keys.elementAt(index);
+                      final Map value = videoDataClear[key];
 
                       // 0 Not downloaded
                       // 1 Downloading
                       // 2 Downloaded
 
                       if (value["downloadState"] == 2) {
-                        return ListTile(
-                          title: Text(
-                            value["title"],
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          subtitle: Text("${value["author"]}"),
-                          leading: SizedBox(
-                            width: 90,
-                            height: 90,
-                            child: Stack(
+                        return Slidable(
+                            endActionPane: ActionPane(
+                              motion: const ScrollMotion(),
+                              extentRatio: 0.25,
                               children: [
-                                const Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                                Center(
-                                  child: Opacity(
-                                    opacity: _opacity,
-                                    child: Image.file(
-                                      basePath == ''
-                                          ? File(value['thumbnail'])
-                                          : File(
-                                              "$basePath/thumbnails/${value['id']}.jpg"),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
+                                SlidableAction(
+                                  icon: Icons.visibility_off,
+                                  backgroundColor: Colors.red,
+                                  onPressed: (BuildContext context) {
+                                    videoData[key]["isHidden"] = true;
+                                    videoDataClear.remove(key);
+                                    SharedPrefs()
+                                        .updateDataMap(videoData, "currentSongs");
+                                    Player().updatePlaylist(videoDataClear, basePath);
+                                    setState(() {
+                                      hiddenSongs = videoData.values
+                                          .where((element) => element['isHidden'])
+                                          .length;
+                                      navbar = {
+                                        'title': widget.offlineMode
+                                            ? 'Offline Mode'
+                                            : 'Online Mode',
+                                        'subtitle':
+                                            'Showing ${(videoData.length) - hiddenSongs}/${videoData.length} songs',
+                                      };
+                                      videoData;
+                                      videoDataClear;
+                                    });
+                                    Snacker().show(
+                                      context: context,
+                                      contentType: ContentType.success,
+                                      title: 'Song removed',
+                                      message: 'Song removed from the playlist',
+                                    );
+                                  },
+                                )
                               ],
                             ),
-                          ),
-                          onTap: () {
-                            Player().play(videoData, basePath, index);
-                          },
-                        );
+                            child: ListTile(
+                              title: Text(
+                                value["title"],
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              subtitle: Text("${value["author"]}"),
+                              leading: SizedBox(
+                                width: 90,
+                                height: 90,
+                                child: Stack(
+                                  children: [
+                                    const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    Center(
+                                      child: Opacity(
+                                        opacity: _opacity,
+                                        child: Image.file(
+                                          basePath == ''
+                                              ? File(value['thumbnail'])
+                                              : File(
+                                                  "$basePath/thumbnails/${value['id']}.jpg"),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              onTap: () {
+                                Player().play(videoData, basePath, index);
+                              },
+                            ));
                       } else if (value["downloadState"] == 0) {
                         return ListTile(
                           title: Text(value["title"],
@@ -381,7 +455,7 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                 ),
               ],
             ),
-            bottomNavigationBar: PlayerBar(videoData: videoData, basePath: basePath),
+            bottomNavigationBar: PlayerBar(videoData: videoDataClear, basePath: basePath),
           );
         }
         return const LoadingScreen();

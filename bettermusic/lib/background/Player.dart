@@ -10,6 +10,10 @@ bool _isPlaylistSet = audioPlayer.audioSource != null;
 
 class Player {
   Future<void> play(Map videoData, String path, int index) async {
+    // Remove all songs that have value "isHidden" set to true
+    Map tempData = Map.from(videoData);
+    tempData.removeWhere((key, value) => value['isHidden'] == true);
+
     if (_isPlaylistSet) {
       if (index == audioPlayer.currentIndex) {
         audioPlayer.playing ? audioPlayer.pause() : audioPlayer.play();
@@ -20,7 +24,7 @@ class Player {
     } else {
       audioPlayer.setAudioSource(
         ConcatenatingAudioSource(
-          children: videoData.entries.map((entry) {
+          children: tempData.entries.map((entry) {
             return AudioSource.uri(
               Uri.parse("file://$path/mp3/${entry.key}.mp3"),
               tag: MediaItem(
@@ -42,12 +46,30 @@ class Player {
         audioPlayer.seek(Duration.zero, index: index);
         audioPlayer.play();
       } else {
-        int randomSong = Random().nextInt(videoData.length);
+        int randomSong = Random().nextInt(tempData.length);
         audioPlayer.seek(Duration.zero, index: randomSong);
       }
 
       _isPlaylistSet = true;
     }
+  }
+
+  void updatePlaylist(Map videoData, String path) {
+    audioPlayer.setAudioSource(
+      ConcatenatingAudioSource(
+        children: videoData.entries.map((entry) {
+          return AudioSource.uri(
+            Uri.parse("file://$path/mp3/${entry.key}.mp3"),
+            tag: MediaItem(
+              id: entry.key,
+              title: entry.value['title'],
+              album: entry.value['author'],
+              artUri: Uri.parse("file://$path/thumbnails/${entry.key}.jpg"),
+            ),
+          );
+        }).toList(),
+      ),
+    );
   }
 
   void previous() async {

@@ -41,7 +41,7 @@ class _PlayerBarState extends State<PlayerBar> {
 
   void updateUI() {
     Future.delayed(const Duration(milliseconds: 100), () {
-      if (widget.videoData.isNotEmpty) {
+      if (widget.videoData.isNotEmpty && mounted) {
         setState(() {
           playerData = Player().getData(widget.videoData, widget.basePath);
         });
