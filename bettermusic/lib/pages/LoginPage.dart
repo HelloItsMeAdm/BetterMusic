@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../utils/Constants.dart';
 import '../utils/CustomColors.dart';
+import '../utils/InternetCheck.dart';
 import '../utils/Themes.dart';
 import '../widgets/GoogleSignInButton.dart';
+import 'HomePage.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -22,10 +24,27 @@ class MyLoginPage extends StatefulWidget {
   const MyLoginPage({super.key});
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<MyLoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<MyLoginPage> {
+  @override
+  void initState() {
+    super.initState();
+    checkForInternet();
+  }
+
+  // Check for internet every 1 second
+  Future<void> checkForInternet() async {
+    while (true) {
+      if (!await InternetCheck().canUseInternet()) {
+        runApp(const HomePage(offlineMode: true));
+        break;
+      }
+      await Future.delayed(const Duration(seconds: 1));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
