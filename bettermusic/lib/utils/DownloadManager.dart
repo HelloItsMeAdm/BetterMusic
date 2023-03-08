@@ -11,7 +11,8 @@ import 'Constants.dart';
 class DownloadManager {
   final YoutubeExplode yt = YoutubeExplode();
 
-  Future<void> download(String id, BuildContext context, String title) async {
+  Future<void> download(
+      String id, BuildContext context, String title, bool useSnacker) async {
     String basePath = await Constants().getAppSpecificFilesDir();
 
     final String mp3Path = "$basePath/mp3/$id.mp3";
@@ -35,11 +36,14 @@ class DownloadManager {
     var file = File(mp3Path);
     var fileStream = file.openWrite();
 
-    Snacker().show(
+    if (useSnacker) {
+      Snacker().show(
         context: context,
         contentType: ContentType.warning,
         title: "Downloading started...",
-        message: title);
+        message: title,
+      );
+    }
 
     // Write the stream to the file.
     await stream.pipe(fileStream);
@@ -52,11 +56,15 @@ class DownloadManager {
     while (!await File(thumbnailPath).exists()) {
       await Future.delayed(const Duration(milliseconds: 100));
     }
-    Snacker().show(
+
+    if (useSnacker) {
+      Snacker().show(
         context: context,
         contentType: ContentType.success,
         title: "Download complete!",
-        message: title);
+        message: title,
+      );
+    }
   }
 
   Future<Map> getDownloadedFiles() async {
@@ -119,5 +127,20 @@ class DownloadManager {
         return;
       }
     }
+  }
+
+  Future<void> fixSong(
+      String id, BuildContext context, String basePath, String title) async {
+    // delete old files
+    if (await File("$basePath/mp3/$id.mp3").exists()) {
+      await File("$basePath/mp3/$id.mp3").delete();
+    }
+    if (await File("$basePath/thumbnails/$id.jpg").exists()) {
+      await File("$basePath/thumbnails/$id.jpg").delete();
+    }
+
+    await download(id, context, title, false);
+
+    return;
   }
 }

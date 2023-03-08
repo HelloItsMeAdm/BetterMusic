@@ -101,93 +101,95 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
     }
     oneRun = true;
     DownloadManager().getDownloadedFiles().then((files) {
-      Constants().getAppSpecificFilesDir().then((path) async =>
-      {
-        basePath = path,
-        if (await InternetCheck().canUseInternet())
-          {
-            YoutubeData().getPlaylists().then((data) =>
-            {
-              if (videoData.isEmpty)
-                {
-                  setState(() {
-                    hiddenSongs = data?.values
-                        .where((element) => element['isHidden'])
-                        .length ??
-                        0;
-                    navbar = {
-                      'title':
-                      widget.offlineMode ? 'Offline Mode' : 'Online Mode',
-                      'subtitle':
-                      'Showing ${(data?.length ?? 0) - hiddenSongs}/${data?.length ??
-                          0} songs',
-                    };
-                    videoData = data ?? {};
-                    data?.forEach((key, value) async {
-                      if (!files.containsKey("$key.mp3")) {
-                        videoData[key]["downloadState"] = 1;
-                        DownloadManager()
-                            .download(key, context, videoData[key]["title"])
-                            .then((_) =>
+      Constants().getAppSpecificFilesDir().then((path) async => {
+            basePath = path,
+            if (await InternetCheck().canUseInternet())
+              {
+                YoutubeData().getPlaylists().then((data) => {
+                      if (videoData.isEmpty)
                         {
                           setState(() {
-                            videoData[key]["downloadState"] = 2;
-                            hiddenSongs = data.values
-                                .where((element) => element['isHidden'])
-                                .length;
+                            hiddenSongs = data?.values
+                                    .where((element) => element['isHidden'])
+                                    .length ??
+                                0;
                             navbar = {
-                              'title': widget.offlineMode
-                                  ? 'Offline Mode'
-                                  : 'Online Mode',
+                              'title':
+                                  widget.offlineMode ? 'Offline Mode' : 'Online Mode',
                               'subtitle':
-                              'Showing ${(data.length) - hiddenSongs}/${data
-                                  .length} songs',
+                                  'Showing ${(data?.length ?? 0) - hiddenSongs}/${data?.length ?? 0} songs',
                             };
+                            videoData = data ?? {};
+                            data?.forEach((key, value) async {
+                              if (!files.containsKey("$key.mp3")) {
+                                videoData[key]["downloadState"] = 1;
+                                DownloadManager()
+                                    .download(key, context, videoData[key]["title"], true)
+                                    .then((_) => {
+                                          setState(() {
+                                            videoData[key]["downloadState"] = 2;
+                                            hiddenSongs = data.values
+                                                .where((element) => element['isHidden'])
+                                                .length;
+                                            navbar = {
+                                              'title': widget.offlineMode
+                                                  ? 'Offline Mode'
+                                                  : 'Online Mode',
+                                              'subtitle':
+                                                  'Showing ${(data.length) - hiddenSongs}/${data.length} songs',
+                                            };
+                                          })
+                                        });
+                              } else {
+                                videoData[key]["downloadState"] = 2;
+                              }
+                            });
+                            DownloadManager()
+                                .removeOldFiles(videoData, basePath, context);
+                            videoDataClear = Map.from(videoData);
+                            videoDataClear.removeWhere((key, value) => value['isHidden']);
+                            canShow = true;
                           })
-                        });
-                      } else {
-                        videoData[key]["downloadState"] = 2;
-                      }
-                    });
-                    DownloadManager()
-                        .removeOldFiles(videoData, basePath, context);
-                    videoDataClear = Map.from(videoData);
-                    videoDataClear.removeWhere((key, value) => value['isHidden']);
-                    canShow = true;
-                  })
-                }
-            }),
-          }
-        else
-          {
-            SharedPrefs().getMapData().then((data) =>
-            {
-              videoData = data,
-              setState(() {
-                data.forEach(
-                      (key, value) async {
-                    if (!files.containsKey("$key.mp3")) {
-                      videoData[key]["downloadState"] = 0;
-                    } else {
-                      videoData[key]["downloadState"] = 2;
-                    }
-                  },
-                );
-                hiddenSongs =
-                    data.values
-                        .where((element) => element['isHidden'])
-                        .length;
-                navbar = {
-                  'title': widget.offlineMode ? 'Offline Mode' : 'Online Mode',
-                  'subtitle':
-                  'Showing ${(data.length) - hiddenSongs}/${data.length} songs',
-                };
-                videoDataClear = Map.from(videoData);
-                videoDataClear.removeWhere((key, value) => value['isHidden']);
-                canShow = true;
-              }),
-            }),
-          },
+                        }
+                    }),
+              }
+            else
+              {
+                SharedPrefs().getMapData().then((data) => {
+                      videoData = data,
+                      setState(() {
+                        data.forEach(
+                          (key, value) async {
+                            if (!files.containsKey("$key.mp3")) {
+                              videoData[key]["downloadState"] = 0;
+                            } else {
+                              videoData[key]["downloadState"] = 2;
+                            }
+                          },
+                        );
+                        hiddenSongs =
+                            data.values.where((element) => element['isHidden']).length;
+                        navbar = {
+                          'title': widget.offlineMode ? 'Offline Mode' : 'Online Mode',
+                          'subtitle':
+                              'Showing ${(data.length) - hiddenSongs}/${data.length} songs',
+                        };
+                        videoDataClear = Map.from(videoData);
+                        videoDataClear.removeWhere((key, value) => value['isHidden']);
+                        canShow = true;
+                      }),
+                    }),
+              },
+          });
+    });
+  }
+
+  void fixSong(
+      String id, BuildContext context, String basePath, String title, String key) {
+    DownloadManager().fixSong(id, context, basePath, title).then((_) {
+      setState(() {
+        videoData[key]["downloadState"] = 2;
+        videoDataClear[key]["downloadState"] = 2;
       });
     });
   }
@@ -203,7 +205,7 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
             appBar: AppBar(
               centerTitle: true,
               backgroundColor:
-              widget.offlineMode ? CustomColors.gray : CustomColors.primaryColor,
+                  widget.offlineMode ? CustomColors.gray : CustomColors.primaryColor,
               actions: [
                 IconButton(
                   icon: const Icon(Icons.refresh),
@@ -215,8 +217,8 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                         oneRun = false;
                         canShow = false;
                         getPlaylist().then((_) => {
-                        Player().updatePlaylist(videoDataClear, basePath),
-                        });
+                              Player().updatePlaylist(videoDataClear, basePath),
+                            });
                       });
                     } else {
                       Snacker().show(
@@ -224,7 +226,7 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                           contentType: ContentType.failure,
                           title: 'No internet connection',
                           message:
-                          'Please connect to the internet to refresh the playlist');
+                              'Please connect to the internet to refresh the playlist');
                     }
                   },
                 ),
@@ -235,12 +237,11 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            HiddenSongs(
-                              offlineMode: widget.offlineMode,
-                              basePath: basePath,
-                              videoData: videoData,
-                            ),
+                        builder: (context) => HiddenSongs(
+                          offlineMode: widget.offlineMode,
+                          basePath: basePath,
+                          videoData: videoData,
+                        ),
                       ),
                     );
                   },
@@ -267,21 +268,21 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                     borderRadius: BorderRadius.circular(50),
                     child: widget.offlineMode
                         ? Container(
-                      foregroundDecoration: const BoxDecoration(
-                        color: Colors.grey,
-                        backgroundBlendMode: BlendMode.saturation,
-                      ),
-                      child: Image.asset(
-                        'assets/images/logo_round.png',
-                        fit: BoxFit.contain,
-                        height: 32,
-                      ),
-                    )
+                            foregroundDecoration: const BoxDecoration(
+                              color: Colors.grey,
+                              backgroundBlendMode: BlendMode.saturation,
+                            ),
+                            child: Image.asset(
+                              'assets/images/logo_round.png',
+                              fit: BoxFit.contain,
+                              height: 32,
+                            ),
+                          )
                         : Image.asset(
-                      'assets/images/logo_round.png',
-                      fit: BoxFit.contain,
-                      height: 32,
-                    ),
+                            'assets/images/logo_round.png',
+                            fit: BoxFit.contain,
+                            height: 32,
+                          ),
                   ),
                   Container(
                     padding: const EdgeInsets.all(8.0),
@@ -375,8 +376,7 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                                             ? 'Offline Mode'
                                             : 'Online Mode',
                                         'subtitle':
-                                        'Showing ${(videoData.length) -
-                                            hiddenSongs}/${videoData.length} songs',
+                                            'Showing ${(videoData.length) - hiddenSongs}/${videoData.length} songs',
                                       };
                                       videoData;
                                       videoDataClear;
@@ -387,6 +387,18 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                                       title: 'Song removed',
                                       message: 'Song removed from the playlist',
                                     );
+                                  },
+                                ),
+                                SlidableAction(
+                                  icon: Icons.auto_fix_high,
+                                  backgroundColor: CustomColors.primaryColor,
+                                  onPressed: (_) {
+                                    fixSong(value["id"], context, basePath,
+                                        value["title"], key);
+                                    setState(() {
+                                      videoData[key]["downloadState"] = 1;
+                                      videoDataClear[key]["downloadState"] = 1;
+                                    });
                                   },
                                 )
                               ],
@@ -404,7 +416,10 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                                 child: Stack(
                                   children: [
                                     const Center(
-                                      child: CircularProgressIndicator(),
+                                      child: CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(
+                                            CustomColors.primaryColor),
+                                      ),
                                     ),
                                     Center(
                                       child: Opacity(
@@ -413,7 +428,7 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                                           basePath == ''
                                               ? File(value['thumbnail'])
                                               : File(
-                                              "$basePath/thumbnails/${value['id']}.jpg"),
+                                                  "$basePath/thumbnails/${value['id']}.jpg"),
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -438,15 +453,15 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                             height: 90,
                             child: Center(
                                 child: RichText(
-                                  text: const TextSpan(
-                                    text: "Not downloaded",
-                                    style: TextStyle(color: Colors.grey),
-                                  ),
-                                  textAlign: TextAlign.center,
-                                )),
+                              text: const TextSpan(
+                                text: "Not downloaded",
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              textAlign: TextAlign.center,
+                            )),
                           ),
                         );
-                      } else {
+                      } else if (value["downloadState"] == 1) {
                         return ListTile(
                             title: Text(
                               value["title"],
@@ -458,7 +473,10 @@ class _MyHomePageState extends State<MyHomePage> with AutomaticKeepAliveClientMi
                               width: 90,
                               height: 90,
                               child: Center(
-                                child: CircularProgressIndicator(),
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      CustomColors.primaryColor),
+                                ),
                               ),
                             ));
                       }

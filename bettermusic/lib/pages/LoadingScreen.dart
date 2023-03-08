@@ -75,7 +75,7 @@ class _LoadingScreenState extends State<LoadingScreenPage> {
               const SizedBox(height: 20),
               const Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  valueColor: AlwaysStoppedAnimation<Color>(CustomColors.primaryColor),
                 ),
               ),
               const SizedBox(height: 20),
