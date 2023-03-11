@@ -88,6 +88,22 @@ class _LoginPageState extends State<MyLoginPage> {
                         fontSize: 20,
                       ),
                     ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        runApp(const HomePage(offlineMode: true));
+                      },
+                      style: ElevatedButton.styleFrom(
+                          shape: const StadiumBorder(),
+                          backgroundColor: CustomColors.gray,
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 40, vertical: 15)),
+                      child: const Text('Continue in Offline Mode',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500)),
+                    ),
                   ],
                 ),
               ),
